@@ -54,7 +54,7 @@ export function TopBar() {
           scrolled ? 'border-graphite/20 shadow-xs' : 'border-graphite/10'
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div className="w-full px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full gap-4">
             
             {/* Logo / Brand */}
@@ -100,7 +100,7 @@ export function TopBar() {
             </nav>
 
             {/* Right Side Utility & Auth Controls — Minimal, decluttered */}
-            <div className="hidden md:flex items-center gap-3 sm:gap-4 flex-shrink-0">
+            <div className="hidden lg:flex items-center gap-3 sm:gap-4 flex-shrink-0">
               {/* Theme Toggle Button — Clean modern icon button */}
               <button
                 type="button"
