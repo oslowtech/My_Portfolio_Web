@@ -1,0 +1,50 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Next.js build output
+/.next/
+/out/
+
+# Production build artifacts
+/build
+/dist
+
+# Environment variables & secrets (CRITICAL: Do NOT commit secrets!)
+.env*.local
+.env
+!.env.example
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+bun.report*
+
+# Certificates & keys
+*.pem
+*.key
+*.cert

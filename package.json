@@ -1,0 +1,46 @@
+{
+  "name": "pranjal-giri-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@react-spring/three": "^9.7.5",
+    "@react-three/drei": "^10.3.0",
+    "@react-three/fiber": "^9.1.2",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.10",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/typography": "^0.5.16",
+    "@uiw/react-md-editor": "^4.0.7",
+    "autoprefixer": "^10.6.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.18.1",
+    "lucide-react": "^0.514.0",
+    "next": "^15.3.4",
+    "postcss": "^8.5.28",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-intersection-observer": "^9.16.0",
+    "resend": "^6.30.0",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.11",
+    "three": "^0.176.0",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "@types/node": "^22.15.32",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.5",
+    "@types/three": "^0.176.0",
+    "eslint": "^9.29.0",
+    "eslint-config-next": "^15.3.4",
+    "@eslint/eslintrc": "^3.3.1"
+  }
+}
