@@ -33,8 +33,13 @@ export async function GET(request: Request) {
     if (!error) {
       const { data: { user } } = await supabase.auth.getUser()
 
+      // If specifically requesting password update, route directly to /update-password
+      if (next === '/update-password' || next.startsWith('/update-password')) {
+        return NextResponse.redirect(`${origin}/update-password`)
+      }
+
       // If Pranjal logs in, redirect directly to /admin
-      if (user?.email === 'pranjalgiri1122005@gmail.com') {
+      if (user?.email?.toLowerCase() === 'pranjalgiri1122005@gmail.com') {
         return NextResponse.redirect(`${origin}/admin`)
       }
 
