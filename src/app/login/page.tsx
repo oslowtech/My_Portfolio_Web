@@ -223,9 +223,10 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-graphite text-paper font-mono text-xs tracking-widest py-3 hover:bg-orange-DEFAULT transition-colors disabled:opacity-50"
+                    className="w-full bg-orange-DEFAULT hover:bg-orange-dark text-white font-mono text-xs font-bold tracking-widest py-3 transition-colors disabled:opacity-50 shadow-md cursor-pointer"
+                    style={{ backgroundColor: '#D96C32', color: '#FFFFFF' }}
                   >
-                    {loading ? 'DISPATCHING TOKEN...' : 'TRANSMIT OTP & MAGIC LINK'}
+                    {loading ? 'DISPATCHING TOKEN...' : 'TRANSMIT OTP & MAGIC LINK →'}
                   </button>
                   <p className="font-mono text-2xs text-steel/70 text-center">
                     A 6-digit access code and one-click magic link will be transmitted to your email.
@@ -346,15 +347,16 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-graphite text-paper font-mono text-xs tracking-widest py-3 hover:bg-orange-DEFAULT transition-colors disabled:opacity-50"
+                className="w-full bg-orange-DEFAULT hover:bg-orange-dark text-white font-mono text-xs font-bold tracking-widest py-3 transition-colors disabled:opacity-50 shadow-md cursor-pointer"
+                style={{ backgroundColor: '#D96C32', color: '#FFFFFF' }}
               >
                 {loading
                   ? 'AUTHENTICATING...'
                   : mode === 'login'
-                  ? 'ACCESS SYSTEM'
+                  ? 'ACCESS SYSTEM →'
                   : mode === 'signup'
-                  ? 'REGISTER OPERATOR'
-                  : 'DISPATCH RESET LINK'}
+                  ? 'REGISTER OPERATOR →'
+                  : 'DISPATCH RESET LINK →'}
               </button>
             </form>
           )}

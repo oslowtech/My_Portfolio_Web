@@ -10,11 +10,13 @@
   --color-graphite: var(--graphite);
   --color-graphite-light: var(--graphite-light);
   --color-orange: var(--orange);
+  --color-orange-DEFAULT: var(--orange);
   --color-orange-light: var(--orange-light);
   --color-orange-dark: var(--orange-dark);
   --color-sage: var(--sage);
   --color-sage-light: var(--sage-light);
   --color-yellow: var(--yellow);
+  --color-yellow-DEFAULT: var(--yellow);
   --color-yellow-light: var(--yellow-light);
   --color-yellow-dark: var(--yellow-dark);
   --color-ink: var(--ink);
