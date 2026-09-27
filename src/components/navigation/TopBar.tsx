@@ -19,7 +19,7 @@ const NAV_ITEMS = [
 
 export function TopBar() {
   const pathname = usePathname()
-  const { user, isAdmin } = useAuth()
+  const { user, profile, isAdmin } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -36,7 +36,7 @@ export function TopBar() {
   }, [])
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
+    const onScroll = () => setScrolled(window.scrollY > 15)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -46,42 +46,42 @@ export function TopBar() {
       <header
         className={cn(
           'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-          scrolled
-            ? 'bg-paper/95 backdrop-blur-sm border-b border-graphite/10 shadow-engineering'
-            : 'bg-transparent'
+          'bg-paper/95 backdrop-blur-md border-b border-graphite/10',
+          scrolled ? 'shadow-engineering py-0' : 'py-0.5'
         )}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-14">
+          <div className="flex items-center justify-between h-16 gap-4">
+            
             {/* Logo */}
-            <Link href="/" className="group flex items-center gap-3">
-              <div className="relative">
-                <div className="w-6 h-6 border border-orange-DEFAULT/60 rotate-45 group-hover:rotate-90 transition-transform duration-300" />
+            <Link href="/" className="group flex items-center gap-3 flex-shrink-0">
+              <div className="relative w-6 h-6 flex items-center justify-center">
+                <div className="w-5 h-5 border border-orange-DEFAULT/70 rotate-45 group-hover:rotate-90 transition-transform duration-300" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-2 h-2 bg-orange-DEFAULT rotate-45" />
                 </div>
               </div>
-              <div>
-                <div className="font-display font-bold text-sm text-ink tracking-tight leading-none">
+              <div className="flex flex-col justify-center">
+                <span className="font-display font-bold text-sm sm:text-base text-ink tracking-tight leading-tight">
                   PRANJAL GIRI
-                </div>
-                <div className="font-mono text-2xs text-steel tracking-widest leading-none mt-0.5">
+                </span>
+                <span className="font-mono text-3xs text-steel tracking-widest leading-tight hidden sm:block">
                   AI & ROBOTICS / FLIGHT SOFTWARE
-                </div>
+                </span>
               </div>
             </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1">
+            {/* Desktop Navigation Links */}
+            <nav className="hidden xl:flex items-center gap-1 flex-shrink-0">
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'font-mono text-2xs tracking-widest px-3 py-1.5 transition-colors border border-transparent',
+                    'font-mono text-2xs tracking-widest px-3 py-1.5 transition-colors border border-transparent whitespace-nowrap',
                     pathname === item.href || pathname.startsWith(item.href + '/')
-                      ? 'text-orange-DEFAULT border-orange/20 bg-orange/5'
-                      : 'text-steel hover:text-graphite hover:border-graphite/10'
+                      ? 'text-orange-DEFAULT border-orange/20 bg-orange/5 font-semibold'
+                      : 'text-steel hover:text-ink hover:border-graphite/15'
                   )}
                 >
                   {item.label}
@@ -89,47 +89,51 @@ export function TopBar() {
               ))}
             </nav>
 
-            {/* Right side */}
-            <div className="hidden lg:flex items-center gap-3">
-              {/* System time */}
-              <div className="font-mono text-2xs text-steel/60">{time}</div>
-
-              {/* Status indicator */}
-              <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse-slow" />
-                <span className="font-mono text-2xs text-sage tracking-widest">SYSTEM: ONLINE</span>
+            {/* Right Side Utility & Auth Controls */}
+            <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+              {/* UTC System Time (Only on wide screens to prevent clustering) */}
+              <div className="hidden 2xl:block font-mono text-3xs text-steel/60 whitespace-nowrap">
+                {time}
               </div>
 
-              {/* Theme Toggle */}
+              {/* Status Indicator */}
+              <div className="hidden xl:flex items-center gap-1.5 whitespace-nowrap border-l border-graphite/10 pl-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse-slow" />
+                <span className="font-mono text-3xs text-sage tracking-widest">SYS: ONLINE</span>
+              </div>
+
+              {/* Theme Toggle Button */}
               <button
+                type="button"
                 onClick={toggleTheme}
-                className="font-mono text-2xs tracking-wider px-2 py-1 border border-graphite/20 hover:border-orange/50 text-steel hover:text-ink transition-colors flex items-center gap-1.5"
+                className="font-mono text-2xs tracking-wider px-2.5 py-1 border border-graphite/20 hover:border-orange-DEFAULT text-steel hover:text-ink transition-colors flex items-center gap-1.5 whitespace-nowrap bg-paper-dark/20"
                 title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
               >
-                <span className={cn("w-1.5 h-1.5 rounded-full transition-colors", theme === 'dark' ? 'bg-orange-DEFAULT' : 'bg-steel')} />
+                <span className={cn('w-1.5 h-1.5 rounded-full transition-colors', theme === 'dark' ? 'bg-orange-DEFAULT' : 'bg-steel')} />
                 <span>{theme === 'dark' ? 'DARK' : 'LIGHT'}</span>
               </button>
 
-              {/* Auth */}
+              {/* Auth Controls */}
               {user ? (
-                <div className="flex items-center gap-2">
-                  <Link
-                    href="/profile"
-                    className="font-mono text-2xs text-ink hover:text-orange-DEFAULT border border-graphite/20 px-2 py-1 transition-colors"
-                  >
-                    PROFILE
-                  </Link>
+                <div className="flex items-center gap-2 border-l border-graphite/10 pl-3">
                   {isAdmin && (
                     <Link
                       href="/admin"
-                      className="font-mono text-2xs text-orange-DEFAULT border border-orange/30 px-2 py-1 hover:bg-orange/5 transition-colors"
+                      className="font-mono text-2xs text-orange-DEFAULT border border-orange-DEFAULT/40 bg-orange/5 px-2.5 py-1 hover:bg-orange/15 transition-colors whitespace-nowrap font-bold"
                     >
                       ADMIN
                     </Link>
                   )}
+                  <Link
+                    href="/profile"
+                    className="font-mono text-2xs text-ink hover:text-orange-DEFAULT border border-graphite/20 px-2.5 py-1 transition-colors whitespace-nowrap bg-paper-dark/20"
+                  >
+                    @{profile?.username || 'PROFILE'}
+                  </Link>
                   <button
+                    type="button"
                     onClick={() => signOut()}
-                    className="font-mono text-2xs text-steel hover:text-graphite transition-colors"
+                    className="font-mono text-2xs text-steel hover:text-red-500 transition-colors whitespace-nowrap px-1"
                   >
                     SIGN OUT
                   </button>
@@ -137,60 +141,70 @@ export function TopBar() {
               ) : (
                 <Link
                   href="/login"
-                  className="font-mono text-2xs text-orange-DEFAULT border border-orange/30 px-2 py-1 hover:bg-orange/5 transition-colors"
+                  className="font-mono text-2xs text-paper bg-graphite hover:bg-orange-DEFAULT px-3 py-1.5 transition-colors whitespace-nowrap font-bold tracking-wider"
+                  style={{ backgroundColor: '#263238', color: '#FFFFFF' }}
                 >
-                  LOGIN
+                  LOGIN →
                 </Link>
               )}
             </div>
 
-            {/* Mobile menu button */}
-            <div className="lg:hidden flex items-center gap-2">
+            {/* Mobile / Tablet Nav Trigger */}
+            <div className="xl:hidden flex items-center gap-2">
               <button
+                type="button"
                 onClick={toggleTheme}
-                className="font-mono text-2xs px-2 py-1 border border-graphite/20 text-steel"
+                className="font-mono text-xs px-2 py-1 border border-graphite/20 text-steel hover:text-ink"
+                title="Toggle Theme"
               >
                 {theme === 'dark' ? '🌙' : '☀️'}
               </button>
+
               <button
-                className="flex flex-col gap-1 p-2"
+                type="button"
+                className="flex flex-col justify-center items-center gap-1.5 p-2 border border-graphite/15 hover:border-orange-DEFAULT text-ink transition-colors"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-label="Toggle menu"
               >
-                <span className={cn('w-5 h-px bg-graphite transition-transform duration-200', mobileOpen && 'rotate-45 translate-y-1')} />
-                <span className={cn('w-5 h-px bg-graphite transition-opacity duration-200', mobileOpen && 'opacity-0')} />
-                <span className={cn('w-5 h-px bg-graphite transition-transform duration-200', mobileOpen && '-rotate-45 -translate-y-1')} />
+                <span className={cn('w-5 h-0.5 bg-ink transition-transform duration-200', mobileOpen && 'rotate-45 translate-y-2')} />
+                <span className={cn('w-5 h-0.5 bg-ink transition-opacity duration-200', mobileOpen && 'opacity-0')} />
+                <span className={cn('w-5 h-0.5 bg-ink transition-transform duration-200', mobileOpen && '-rotate-45 -translate-y-2')} />
               </button>
             </div>
+
           </div>
         </div>
       </header>
 
-      {/* Mobile nav */}
+      {/* Mobile Drawer Navigation */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            className="fixed inset-0 z-30 bg-paper pt-14"
+            className="fixed inset-0 z-30 bg-paper pt-20 px-6 pb-8 flex flex-col justify-between"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="bg-engineering-grid bg-grid-40 absolute inset-0 opacity-30" />
-            <nav className="relative flex flex-col p-6 gap-1">
+            <div className="bg-engineering-grid bg-grid-40 absolute inset-0 opacity-30 pointer-events-none" />
+            
+            <nav className="relative flex flex-col gap-1 z-10">
+              <div className="font-mono text-3xs text-orange-DEFAULT tracking-widest mb-2 px-4">
+                SYSTEM NAVIGATION
+              </div>
               {NAV_ITEMS.map((item, i) => (
                 <motion.div
                   key={item.href}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.04 }}
+                  transition={{ delay: i * 0.03 }}
                 >
                   <Link
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      'block font-mono text-sm tracking-widest py-3 px-4 border-b border-graphite/10',
-                      pathname === item.href ? 'text-orange-DEFAULT' : 'text-ink'
+                      'block font-mono text-sm tracking-widest py-3 px-4 border-b border-graphite/10 transition-colors',
+                      pathname === item.href ? 'text-orange-DEFAULT bg-orange/5 font-bold' : 'text-ink hover:text-orange-DEFAULT'
                     )}
                   >
                     {`→ ${item.label}`}
@@ -198,43 +212,60 @@ export function TopBar() {
                 </motion.div>
               ))}
 
-              <div className="mt-6 flex items-center gap-2 px-4">
-                <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse" />
-                <span className="font-mono text-2xs text-sage">SYSTEM: ONLINE</span>
+              <div className="mt-4 flex items-center justify-between px-4 py-2 border-t border-graphite/10 font-mono text-3xs text-steel">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse" />
+                  <span className="text-sage">ONLINE</span>
+                </div>
+                <div>{time}</div>
               </div>
+            </nav>
 
+            {/* Mobile Auth Footer */}
+            <div className="relative z-10 pt-4 border-t border-graphite/10">
               {!user ? (
-                <Link href="/login" onClick={() => setMobileOpen(false)}
-                  className="mt-4 mx-4 font-mono text-xs text-orange-DEFAULT border border-orange/30 px-4 py-2 text-center"
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="block w-full font-mono text-xs text-center py-3 bg-orange-DEFAULT text-white font-bold tracking-widest shadow-md"
+                  style={{ backgroundColor: '#D96C32', color: '#FFFFFF' }}
                 >
-                  LOGIN
+                  ACCESS SYSTEM // LOGIN →
                 </Link>
               ) : (
-                <div className="flex flex-col gap-2 mt-4 mx-4">
-                  <Link
-                    href="/profile"
-                    onClick={() => setMobileOpen(false)}
-                    className="font-mono text-xs text-ink border border-graphite/20 px-4 py-2 text-center"
-                  >
-                    OPERATOR PROFILE
-                  </Link>
-                  {isAdmin && (
+                <div className="flex flex-col gap-2">
+                  <div className="font-mono text-3xs text-steel tracking-wider px-1">
+                    OPERATOR: <span className="text-ink font-bold">{user.email}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
                     <Link
-                      href="/admin"
+                      href="/profile"
                       onClick={() => setMobileOpen(false)}
-                      className="font-mono text-xs text-orange-DEFAULT border border-orange/30 px-4 py-2 text-center"
+                      className="font-mono text-xs text-center py-2.5 border border-graphite/20 text-ink hover:border-orange-DEFAULT"
                     >
-                      ADMIN CONSOLE
+                      PROFILE
                     </Link>
-                  )}
-                  <button onClick={() => { signOut(); setMobileOpen(false) }}
-                    className="font-mono text-xs text-steel border border-graphite/20 px-4 py-2"
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setMobileOpen(false)}
+                        className="font-mono text-xs text-center py-2.5 border border-orange-DEFAULT/40 bg-orange/10 text-orange-DEFAULT font-bold"
+                      >
+                        ADMIN
+                      </Link>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { signOut(); setMobileOpen(false) }}
+                    className="w-full font-mono text-xs py-2 text-steel hover:text-red-500 border border-graphite/10 mt-1"
                   >
                     SIGN OUT
                   </button>
                 </div>
               )}
-            </nav>
+            </div>
+
           </motion.div>
         )}
       </AnimatePresence>
