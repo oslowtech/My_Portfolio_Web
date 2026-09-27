@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Sun, Moon, Menu, X, LogOut, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
 import { signOut } from '@/lib/auth'
@@ -36,113 +37,117 @@ export function TopBar() {
   }, [])
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 15)
-    window.addEventListener('scroll', onScroll)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
     <>
+      {/* Header with strictly fixed height (h-16) to completely eliminate vertical jumping/movement on scroll */}
       <header
         className={cn(
-          'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-          'bg-paper/95 backdrop-blur-md border-b border-graphite/10',
-          scrolled ? 'shadow-engineering py-0' : 'py-0.5'
+          'fixed top-0 left-0 right-0 z-40 h-16',
+          'bg-paper/90 backdrop-blur-md border-b transition-colors duration-200',
+          scrolled ? 'border-graphite/20 shadow-xs' : 'border-graphite/10'
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16 gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+          <div className="flex items-center justify-between h-full gap-4">
             
-            {/* Logo */}
+            {/* Logo / Brand */}
             <Link href="/" className="group flex items-center gap-3 flex-shrink-0">
-              <div className="relative w-6 h-6 flex items-center justify-center">
-                <div className="w-5 h-5 border border-orange-DEFAULT/70 rotate-45 group-hover:rotate-90 transition-transform duration-300" />
+              <div className="relative w-7 h-7 flex items-center justify-center">
+                <div className="w-5 h-5 border border-orange-DEFAULT/80 rotate-45 group-hover:rotate-90 transition-transform duration-300" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-2 h-2 bg-orange-DEFAULT rotate-45" />
                 </div>
               </div>
               <div className="flex flex-col justify-center">
-                <span className="font-display font-bold text-sm sm:text-base text-ink tracking-tight leading-tight">
+                <span className="font-display font-bold text-sm sm:text-base text-ink tracking-tight leading-none">
                   PRANJAL GIRI
                 </span>
-                <span className="font-mono text-3xs text-steel tracking-widest leading-tight hidden sm:block">
+                <span className="font-mono text-3xs text-steel tracking-widest leading-none mt-1 hidden sm:block">
                   AI & ROBOTICS / FLIGHT SOFTWARE
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
-            <nav className="hidden xl:flex items-center gap-1 flex-shrink-0">
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'font-mono text-2xs tracking-widest px-3 py-1.5 transition-colors border border-transparent whitespace-nowrap',
-                    pathname === item.href || pathname.startsWith(item.href + '/')
-                      ? 'text-orange-DEFAULT border-orange/20 bg-orange/5 font-semibold'
-                      : 'text-steel hover:text-ink hover:border-graphite/15'
-                  )}
-                >
-                  {item.label}
-                </Link>
-              ))}
+            {/* Desktop Navigation Links — Spacious, clean, no cramped box borders */}
+            <nav className="hidden lg:flex items-center gap-6 xl:gap-8 flex-shrink-0">
+              {NAV_ITEMS.map((item) => {
+                const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href + '/'))
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      'font-mono text-xs tracking-wider transition-colors relative py-1 whitespace-nowrap',
+                      isActive
+                        ? 'text-orange-DEFAULT font-bold'
+                        : 'text-steel hover:text-ink'
+                    )}
+                  >
+                    {item.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-DEFAULT rounded-full" />
+                    )}
+                  </Link>
+                )
+              })}
             </nav>
 
-            {/* Right Side Utility & Auth Controls */}
-            <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
-              {/* UTC System Time (Only on wide screens to prevent clustering) */}
-              <div className="hidden 2xl:block font-mono text-3xs text-steel/60 whitespace-nowrap">
-                {time}
-              </div>
-
-              {/* Status Indicator */}
-              <div className="hidden xl:flex items-center gap-1.5 whitespace-nowrap border-l border-graphite/10 pl-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse-slow" />
-                <span className="font-mono text-3xs text-sage tracking-widest">SYS: ONLINE</span>
-              </div>
-
-              {/* Theme Toggle Button */}
+            {/* Right Side Utility & Auth Controls — Minimal, decluttered */}
+            <div className="hidden md:flex items-center gap-3 sm:gap-4 flex-shrink-0">
+              {/* Theme Toggle Button — Clean modern icon button */}
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="font-mono text-2xs tracking-wider px-2.5 py-1 border border-graphite/20 hover:border-orange-DEFAULT text-steel hover:text-ink transition-colors flex items-center gap-1.5 whitespace-nowrap bg-paper-dark/20"
+                aria-label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
                 title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+                className="p-2 rounded-md border border-graphite/15 hover:border-orange-DEFAULT text-steel hover:text-ink transition-colors bg-paper-dark/15 flex items-center justify-center cursor-pointer"
               >
-                <span className={cn('w-1.5 h-1.5 rounded-full transition-colors', theme === 'dark' ? 'bg-orange-DEFAULT' : 'bg-steel')} />
-                <span>{theme === 'dark' ? 'DARK' : 'LIGHT'}</span>
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4 text-orange-DEFAULT" />
+                ) : (
+                  <Moon className="w-4 h-4 text-steel" />
+                )}
               </button>
 
               {/* Auth Controls */}
               {user ? (
-                <div className="flex items-center gap-2 border-l border-graphite/10 pl-3">
+                <div className="flex items-center gap-2 pl-2 border-l border-graphite/15">
                   {isAdmin && (
                     <Link
                       href="/admin"
-                      className="font-mono text-2xs text-orange-DEFAULT border border-orange-DEFAULT/40 bg-orange/5 px-2.5 py-1 hover:bg-orange/15 transition-colors whitespace-nowrap font-bold"
+                      className="font-mono text-2xs text-orange-DEFAULT border border-orange-DEFAULT/40 bg-orange-DEFAULT/10 px-2 py-0.5 rounded font-bold hover:bg-orange-DEFAULT/20 transition-colors whitespace-nowrap"
                     >
                       ADMIN
                     </Link>
                   )}
                   <Link
                     href="/profile"
-                    className="font-mono text-2xs text-ink hover:text-orange-DEFAULT border border-graphite/20 px-2.5 py-1 transition-colors whitespace-nowrap bg-paper-dark/20"
+                    className="font-mono text-xs text-ink hover:text-orange-DEFAULT flex items-center gap-1.5 px-2 py-1 rounded transition-colors whitespace-nowrap"
                   >
-                    @{profile?.username || 'PROFILE'}
+                    <User className="w-3.5 h-3.5 text-steel" />
+                    <span>@{profile?.username || 'profile'}</span>
                   </Link>
                   <button
                     type="button"
                     onClick={() => signOut()}
-                    className="font-mono text-2xs text-steel hover:text-red-500 transition-colors whitespace-nowrap px-1"
+                    title="Sign Out"
+                    className="p-1.5 text-steel hover:text-red-500 rounded transition-colors cursor-pointer"
                   >
-                    SIGN OUT
+                    <LogOut className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ) : (
                 <Link
                   href="/login"
-                  className="font-mono text-2xs text-paper bg-graphite hover:bg-orange-DEFAULT px-3 py-1.5 transition-colors whitespace-nowrap font-bold tracking-wider"
-                  style={{ backgroundColor: '#263238', color: '#FFFFFF' }}
+                  className="font-mono text-xs px-3.5 py-1.5 rounded bg-orange-DEFAULT hover:bg-orange-dark text-white font-medium tracking-wider transition-colors whitespace-nowrap"
+                  style={{ backgroundColor: '#D96C32', color: '#FFFFFF' }}
                 >
                   LOGIN →
                 </Link>
@@ -150,25 +155,27 @@ export function TopBar() {
             </div>
 
             {/* Mobile / Tablet Nav Trigger */}
-            <div className="xl:hidden flex items-center gap-2">
+            <div className="lg:hidden flex items-center gap-2">
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="font-mono text-xs px-2 py-1 border border-graphite/20 text-steel hover:text-ink"
-                title="Toggle Theme"
+                aria-label="Toggle Theme"
+                className="p-2 rounded border border-graphite/15 text-steel hover:text-ink transition-colors bg-paper-dark/15"
               >
-                {theme === 'dark' ? '🌙' : '☀️'}
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4 text-orange-DEFAULT" />
+                ) : (
+                  <Moon className="w-4 h-4 text-steel" />
+                )}
               </button>
 
               <button
                 type="button"
-                className="flex flex-col justify-center items-center gap-1.5 p-2 border border-graphite/15 hover:border-orange-DEFAULT text-ink transition-colors"
+                className="p-2 rounded border border-graphite/15 hover:border-orange-DEFAULT text-ink transition-colors cursor-pointer"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-label="Toggle menu"
               >
-                <span className={cn('w-5 h-0.5 bg-ink transition-transform duration-200', mobileOpen && 'rotate-45 translate-y-2')} />
-                <span className={cn('w-5 h-0.5 bg-ink transition-opacity duration-200', mobileOpen && 'opacity-0')} />
-                <span className={cn('w-5 h-0.5 bg-ink transition-transform duration-200', mobileOpen && '-rotate-45 -translate-y-2')} />
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
 
@@ -189,35 +196,40 @@ export function TopBar() {
             <div className="bg-engineering-grid bg-grid-40 absolute inset-0 opacity-30 pointer-events-none" />
             
             <nav className="relative flex flex-col gap-1 z-10">
-              <div className="font-mono text-3xs text-orange-DEFAULT tracking-widest mb-2 px-4">
-                SYSTEM NAVIGATION
+              <div className="font-mono text-3xs text-orange-DEFAULT tracking-widest mb-3 px-4">
+                NAVIGATION SYSTEMS
               </div>
-              {NAV_ITEMS.map((item, i) => (
-                <motion.div
-                  key={item.href}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.03 }}
-                >
-                  <Link
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      'block font-mono text-sm tracking-widest py-3 px-4 border-b border-graphite/10 transition-colors',
-                      pathname === item.href ? 'text-orange-DEFAULT bg-orange/5 font-bold' : 'text-ink hover:text-orange-DEFAULT'
-                    )}
+              {NAV_ITEMS.map((item, i) => {
+                const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href + '/'))
+                return (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.03 }}
                   >
-                    {`→ ${item.label}`}
-                  </Link>
-                </motion.div>
-              ))}
+                    <Link
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={cn(
+                        'block font-mono text-sm tracking-widest py-3 px-4 rounded transition-colors',
+                        isActive
+                          ? 'text-orange-DEFAULT bg-orange-DEFAULT/10 font-bold'
+                          : 'text-ink hover:text-orange-DEFAULT hover:bg-graphite/5'
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                )
+              })}
 
-              <div className="mt-4 flex items-center justify-between px-4 py-2 border-t border-graphite/10 font-mono text-3xs text-steel">
+              <div className="mt-4 flex items-center justify-between px-4 py-2.5 border-t border-graphite/10 font-mono text-3xs text-steel">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse" />
-                  <span className="text-sage">ONLINE</span>
+                  <span className="text-sage tracking-wider">SYS: ONLINE</span>
                 </div>
-                <div>{time}</div>
+                <div className="text-steel/70">{time}</div>
               </div>
             </nav>
 
@@ -227,7 +239,7 @@ export function TopBar() {
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  className="block w-full font-mono text-xs text-center py-3 bg-orange-DEFAULT text-white font-bold tracking-widest shadow-md"
+                  className="block w-full font-mono text-xs text-center py-3 bg-orange-DEFAULT text-white font-bold tracking-widest rounded transition-colors"
                   style={{ backgroundColor: '#D96C32', color: '#FFFFFF' }}
                 >
                   ACCESS SYSTEM // LOGIN →
@@ -241,7 +253,7 @@ export function TopBar() {
                     <Link
                       href="/profile"
                       onClick={() => setMobileOpen(false)}
-                      className="font-mono text-xs text-center py-2.5 border border-graphite/20 text-ink hover:border-orange-DEFAULT"
+                      className="font-mono text-xs text-center py-2.5 border border-graphite/20 text-ink hover:border-orange-DEFAULT rounded transition-colors"
                     >
                       PROFILE
                     </Link>
@@ -249,7 +261,7 @@ export function TopBar() {
                       <Link
                         href="/admin"
                         onClick={() => setMobileOpen(false)}
-                        className="font-mono text-xs text-center py-2.5 border border-orange-DEFAULT/40 bg-orange/10 text-orange-DEFAULT font-bold"
+                        className="font-mono text-xs text-center py-2.5 border border-orange-DEFAULT/40 bg-orange-DEFAULT/10 text-orange-DEFAULT font-bold rounded transition-colors"
                       >
                         ADMIN
                       </Link>
@@ -258,7 +270,7 @@ export function TopBar() {
                   <button
                     type="button"
                     onClick={() => { signOut(); setMobileOpen(false) }}
-                    className="w-full font-mono text-xs py-2 text-steel hover:text-red-500 border border-graphite/10 mt-1"
+                    className="w-full font-mono text-xs py-2 text-steel hover:text-red-500 border border-graphite/10 rounded mt-1 transition-colors cursor-pointer"
                   >
                     SIGN OUT
                   </button>
