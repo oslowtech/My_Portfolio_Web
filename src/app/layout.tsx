@@ -38,8 +38,32 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${spaceMono.variable} ${inter.variable} ${spaceGrotesk.variable}`}>
-      <body className="bg-paper text-ink font-sans">
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${spaceMono.variable} ${inter.variable} ${spaceGrotesk.variable}`}
+    >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('pg_theme');
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var theme = saved || (prefersDark ? 'dark' : 'light');
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="bg-paper text-ink font-sans transition-colors duration-200">
         <Providers>
           <TopBar />
           <main>{children}</main>

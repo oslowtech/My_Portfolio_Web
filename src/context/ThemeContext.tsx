@@ -19,22 +19,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>('light')
 
   useEffect(() => {
-    const saved = localStorage.getItem('pg_theme') as Theme | null
-    if (saved === 'dark' || saved === 'light') {
-      setThemeState(saved)
-      if (saved === 'dark') {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
-    } else {
-      // Default or system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      if (prefersDark) {
-        setThemeState('dark')
-        document.documentElement.classList.add('dark')
-      }
-    }
+    // Check if the pre-hydration head script already marked dark
+    const isDark = document.documentElement.classList.contains('dark')
+    setThemeState(isDark ? 'dark' : 'light')
   }, [])
 
   const setTheme = (newTheme: Theme) => {
@@ -48,7 +35,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
 
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light')
+    const current = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+    const next = current === 'dark' ? 'light' : 'dark'
+    setTheme(next)
   }
 
   return (

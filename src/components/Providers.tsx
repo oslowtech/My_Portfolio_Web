@@ -4,25 +4,28 @@ import { LoadingScreen } from '@/components/ui/LoadingScreen'
 import { ThemeProvider } from '@/context/ThemeContext'
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [loaded, setLoaded] = useState(false)
   const [showLoader, setShowLoader] = useState(false)
 
   useEffect(() => {
-    const visited = sessionStorage.getItem('pg_visited')
-    if (!visited) {
-      setShowLoader(true)
-    } else {
-      setLoaded(true)
-    }
+    try {
+      const visited = sessionStorage.getItem('pg_visited')
+      if (!visited) {
+        setShowLoader(true)
+      }
+    } catch {}
   }, [])
+
+  const handleComplete = () => {
+    try {
+      sessionStorage.setItem('pg_visited', '1')
+    } catch {}
+    setShowLoader(false)
+  }
 
   return (
     <ThemeProvider>
-      {showLoader && !loaded ? (
-        <LoadingScreen onComplete={() => { setLoaded(true); setShowLoader(false) }} />
-      ) : (
-        children
-      )}
+      {children}
+      {showLoader && <LoadingScreen onComplete={handleComplete} />}
     </ThemeProvider>
   )
 }
